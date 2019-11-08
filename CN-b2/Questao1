@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-
+//constante que define o tamanho da matriz/vetor
 #define Max 2
 
 void MostrarMatriz(float M[Max][Max]){
@@ -38,7 +38,7 @@ void CalcularDetA(float A[Max][Max], float *detA){
 	*detA = aux[0] - aux[1];
 }
 
-void CalcularInversaA(float A[Max][Max], float _A[Max][Max], float vetor_b[]){
+void CalcularInversaA(float A[Max][Max], float _A[Max][Max]){
 	int i, j;
 	for(i = 0; i < Max; i++){
 		for(j = 0; j < Max; j++){			
@@ -50,7 +50,7 @@ void CalcularInversaA(float A[Max][Max], float _A[Max][Max], float vetor_b[]){
 	}
 }
 
-void CalcularX(float _A[Max][Max], float b[Max][Max], float X[Max], float *detA){
+void CalcularX(float _A[Max][Max], float b[Max], float X[Max], float *detA){
 	int i, j;
 	float aux[Max][Max];
 	//fazendo a multiplicaçao do determinante pela matriz inversa.
@@ -105,10 +105,22 @@ void main(){
 	float detA;
 	//iniciando os valores da matriz e vetor
 	IniciarValores(A, b);
-	//
+	//verificando se a matriz é nula.
 	if(VerificarMatrizNulo(A))
 	{
-		printf("Matriz informada eh nula.");
+		printf("====================================\n");
+		printf("=     Matriz informada eh nula     =\n");
+		printf("====================================\n\n");
+		return;
+	}
+	//calculando determinante da matriz A.
+	CalcularDetA(A, &detA);
+	//verificando se o determinante é nulo.
+	if(detA == 0)
+	{
+		printf("====================================\n");
+		printf("=        Determinante nulo         =\n");
+		printf("====================================\n\n");
 		return;
 	}
 	//mostrando dados
@@ -116,11 +128,10 @@ void main(){
 	MostrarMatriz(A);
 	printf("\nVetor b: \n");
 	MostrarVetor(b);
-	//calculando determinante da matriz A e mostrando o seu valor.
-	CalcularDetA(A, &detA);
+	// mostrando o valor do determinante.
 	printf("\nDeterminante: %.4f\n", detA);
 	//Calculando inversa da matriz A e mostrando o seu valor.
-	CalcularInversaA(A, _A, &detA);
+	CalcularInversaA(A, _A);
 	printf("\nMatriz inversa A: \n");
 	MostrarMatriz(_A);
 	//Calculando a soluçao do sistema linear e mostrando o seu valor.
