@@ -1,0 +1,50 @@
+#include <stdlib.h>
+#include <stdio.h>
+
+
+void CalcularVeto_b(int matrizA[2][2], int vetor_b[], int vetorX[]) {
+	int i, j;
+	int aux[2];
+	for(i = 0; i < 2; i++)
+	{
+		for(j = 0; j < 2; j++)
+		{
+			aux[j] = matrizA[i][j] * vetor_b[j];
+		}
+		vetorX[i] = aux[0] + aux[1];
+	}
+}
+
+void CalcularDetA(int A[2][2], int *detA){
+	int aux[2];
+	aux[0] = A[0][0] * A[1][1];
+	aux[0] = A[0][1] * A[1][0];
+	*detA = aux[0] - aux[1];
+}
+
+//void CalcularInversaA(int A[2][2], int _A[2][2], int vetor_b[])
+
+void main(){
+
+	int A[2][2] = { { 1, 2}, {3, 4} };
+	int _A[2][2];
+	int v[] = { 1, 2 };
+
+	int X[2];
+	
+	int detA;
+
+	CalcularVeto_b(A, v, X);
+	CalcularDetA(A, &detA);
+	
+	int i;
+	printf("%i\n", X[0]);
+	printf("%i\n", X[1]);
+	printf("%i", detA);
+
+	//================================================
+	printf("\n\n\n");
+	system("pause");
+	system("cls");
+}
+
