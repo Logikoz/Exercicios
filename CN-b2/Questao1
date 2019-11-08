@@ -1,13 +1,24 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define Max 2
 
-void CalcularVeto_b(int matrizA[2][2], int vetor_b[], int vetorX[]) {
+void MostrarMatriz(int M[Max][Max]){
+	int i, j;
+	for(i = 0; i < Max; i++){
+		for(j = 0; j < Max; j++){
+			printf("%i\t", M[i][j]);
+		}
+		printf("\n");
+	}
+}
+
+void CalcularVeto_b(int matrizA[Max][Max], int vetor_b[], int vetorX[]) {
 	int i, j;
 	int aux[2];
-	for(i = 0; i < 2; i++)
+	for(i = 0; i < Max; i++)
 	{
-		for(j = 0; j < 2; j++)
+		for(j = 0; j < Max; j++)
 		{
 			aux[j] = matrizA[i][j] * vetor_b[j];
 		}
@@ -16,21 +27,37 @@ void CalcularVeto_b(int matrizA[2][2], int vetor_b[], int vetorX[]) {
 }
 
 void CalcularDetA(int A[2][2], int *detA){
-	int aux[2];
+	int aux[Max];
 	aux[0] = A[0][0] * A[1][1];
 	aux[0] = A[0][1] * A[1][0];
 	*detA = aux[0] - aux[1];
 }
 
-//void CalcularInversaA(int A[2][2], int _A[2][2], int vetor_b[])
+void CalcularInversaA(int A[Max][Max], int _A[Max][Max], int vetor_b[]){
+	int i, j;
+	for(i = 0; i < Max; i++){
+		for(j = 0; j < Max; j++){			
+			if(i == j){					
+				if(i == 0)
+					_A[i][j] = A[i+1][j+1];
+				else
+					_A[i][j] = A[i-1][j-1];
+			}
+			else
+			{
+				_A[i][j] = A[i][j] * -1;
+			}
+		}
+	}
+}
 
 void main(){
 
-	int A[2][2] = { { 1, 2}, {3, 4} };
-	int _A[2][2];
+	int A[Max][Max] = { { 1, 2}, {3, 4} };
+	int _A[Max][Max];
 	int v[] = { 1, 2 };
 
-	int X[2];
+	int X[Max];
 	
 	int detA;
 
@@ -41,6 +68,10 @@ void main(){
 	printf("%i\n", X[0]);
 	printf("%i\n", X[1]);
 	printf("%i", detA);
+	
+	CalcularInversaA(A, _A, &detA);
+	MostrarMatriz(_A);
+	
 
 	//================================================
 	printf("\n\n\n");
