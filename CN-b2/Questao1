@@ -3,37 +3,42 @@
 
 #define Max 2
 
-void MostrarMatriz(int M[Max][Max]){
+void MostrarMatriz(float M[Max][Max]){
 	int i, j;
 	for(i = 0; i < Max; i++){
 		for(j = 0; j < Max; j++){
-			printf("%i\t", M[i][j]);
+			printf("%.4f\t", M[i][j]);
 		}
 		printf("\n");
 	}
 }
 
-void CalcularVeto_b(int matrizA[Max][Max], int vetor_b[], int vetorX[]) {
-	int i, j;
-	int aux[2];
-	for(i = 0; i < Max; i++)
-	{
-		for(j = 0; j < Max; j++)
-		{
-			aux[j] = matrizA[i][j] * vetor_b[j];
-		}
-		vetorX[i] = aux[0] + aux[1];
+void MostrarVetor(float V[Max]){
+	int i;
+	for(i = 0; i < Max; i++){
+		printf("%.4f\n", V[i]);
 	}
 }
 
-void CalcularDetA(int A[2][2], int *detA){
-	int aux[Max];
+void MultiplicarMatrizPorVetor(float A[Max][Max], float vetor[Max], float saida[Max]) {
+	int i, j;
+	float aux[Max];
+	for(i = 0; i < Max; i++){
+		for(j = 0; j < Max; j++){
+			aux[j] = A[i][j] * vetor[j];
+		}
+		saida[i] = aux[0] + aux[1];
+	}
+}
+
+void CalcularDetA(float A[Max][Max], float *detA){
+	float aux[Max];
 	aux[0] = A[0][0] * A[1][1];
-	aux[0] = A[0][1] * A[1][0];
+	aux[1] = A[0][1] * A[1][0];
 	*detA = aux[0] - aux[1];
 }
 
-void CalcularInversaA(int A[Max][Max], int _A[Max][Max], int vetor_b[]){
+void CalcularInversaA(float A[Max][Max], float _A[Max][Max], float vetor_b[]){
 	int i, j;
 	for(i = 0; i < Max; i++){
 		for(j = 0; j < Max; j++){			
@@ -45,29 +50,46 @@ void CalcularInversaA(int A[Max][Max], int _A[Max][Max], int vetor_b[]){
 	}
 }
 
+void CalcularX(float _A[Max][Max], float b[Max][Max], float X[Max], float *detA){
+	int i, j;
+	float aux[Max][Max];
+	//fazendo a multiplicaçao do determinante pela matriz inversa.
+	for(i = 0; i < Max; i++){
+		for(j = 0; j < Max; j++){
+			aux[i][j] = _A[i][j] * (1.0 / *detA);
+		}
+	}
+	printf("\nDetA * Inversa A: \n");
+	MostrarMatriz(aux);
+	MultiplicarMatrizPorVetor(aux, b, X);
+}
+
 void main(){
 
-	int A[Max][Max] = { { 1, 2}, {3, 4} };
-	int _A[Max][Max];
-	int v[] = { 1, 2 };
+	float A[Max][Max];// = { { 3.1424, 2.6474}, {-1.3456, 2.1234} };
+	float _A[Max][Max];
+	float b[];// = { 1, 2 };
 
-	int X[Max];
+	float X[Max];
 	
-	int detA;
-
-	CalcularVeto_b(A, v, X);
-	CalcularDetA(A, &detA);
+	float detA;
 	
-	printf("Matriz A: \n");
+	printf("\nMatriz A: \n");
 	MostrarMatriz(A);
 	
-	printf("Vetor b 0: %i\n", X[0]);
-	printf("Vetor b 1: %i\n", X[1]);
-	printf("Determinante: %i\n", detA);
+	printf("\nVetor b: \n");
+	MostrarVetor(b);
+	
+	CalcularDetA(A, &detA);
+	printf("\nDeterminante: %.4f\n", detA);
 	
 	CalcularInversaA(A, _A, &detA);
-	printf("Matriz inversa A: \n");
+	printf("\nMatriz inversa A: \n");
 	MostrarMatriz(_A);
+	
+	CalcularX(_A, b, X, &detA);
+	printf("\nVetor X: \n");
+	MostrarVetor(X);
 	
 
 	//================================================
@@ -75,4 +97,3 @@ void main(){
 	system("pause");
 	system("cls");
 }
-
