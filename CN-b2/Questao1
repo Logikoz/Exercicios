@@ -31,37 +31,83 @@ void MultiplicarMatrizPorVetor(float A[Max][Max], float vetor[Max], float saida[
 	}
 }
 
-void CalcularDetA(float A[Max][Max], float *detA){
+void CalcularDeterminante(float M[Max][Max], float *detM){
 	float aux[Max];
-	aux[0] = A[0][0] * A[1][1];
-	aux[1] = A[0][1] * A[1][0];
-	*detA = aux[0] - aux[1];
+	aux[0] = M[0][0] * M[1][1];
+	aux[1] = M[0][1] * M[1][0];
+	*detM = aux[0] - aux[1];
+}
+/*
+	{ ax + by = b1
+	{ mx + ny = b2
+	
+	D1 = [ a  b ]  ;  D2 = [ a  b1 ]	;	D3 = [ b1 b ]
+		 [ m  n ]		   [ m  b2 ]			 [ b2 n ]
+	
+		 D2   			 D3
+	Y1 = __		;	Y2 = __
+		 D1				 D1
+	
+	Di != 0
+	i = [ 1, 2, 3 ]
+		 
+	   |		 K ( numero qualquer != 0)
+	se |	Yi = __  	[ Infinitas soluçoes ]  (*)
+	   |		 0
+		 
+	   |		 0 
+	se |	Yi = __  	[ Impossivel de determinar ]  (**)
+	   |		 0
+	   
+	senao [ Possivel de determinar ]  (***)
+	
+	0 - (*)
+	1 - (**)
+	2 - (***)
+*/
+unsigned short int VerificarResultadoDeterminante(float M[Max][Max], float v[Max]){
+	float D1[Max][Max] = { { M[0][0], M[0][1] }, { M[1][0], M[1][1] } };
+	float D2[Max][Max] = { { M[0][0], v[0] }, { M[1][0], v[1] } };
+	float D3[Max][Max] = { { v[0], M[0][1] }, { v[1], M[1][1] } };
+	
+	float det1, det2, det3;
+	CalcularDeterminante(D1, &det1);
+	CalcularDeterminante(D2, &det2);
+	CalcularDeterminante(D3, &det3);
+	
+	if ((det2 != 0 || det3 != 0) && det1 == 0){
+		printf("====================================\n");
+		printf("=        Infinitas Soluçoes        =\n");
+		printf("====================================\n\n");
+		return 0;
+	}
+	else if ((det2 == 0 || det3 == 0) && det1 == 0){
+		printf("====================================\n");
+		printf("=     Impossivel de Determinar     =\n");
+		printf("====================================\n\n");
+		return 1;
+	}
+	else
+		return 2;
 }
 
-void CalcularInversaA(float A[Max][Max], float _A[Max][Max]){
+void CalcularInversaA(float A[Max][Max], float _A[Max][Max], float *detA){
 	int i, j;
+	float aux[Max][Max];
 	for(i = 0; i < Max; i++){
 		for(j = 0; j < Max; j++){			
 			if(i == j)
-				_A[i][j] = (i == 0) ? A[i+1][j+1] : A[i-1][j-1];
+				aux[i][j] = (i == 0) ? A[i+1][j+1] : A[i-1][j-1];
 			else
-				_A[i][j] = A[i][j] * -1;
+				aux[i][j] = A[i][j] * -1;
 		}
 	}
-}
-
-void CalcularX(float _A[Max][Max], float b[Max], float X[Max], float *detA){
-	int i, j;
-	float aux[Max][Max];
 	//fazendo a multiplicaçao do determinante pela matriz inversa.
 	for(i = 0; i < Max; i++){
 		for(j = 0; j < Max; j++){
-			aux[i][j] = _A[i][j] * (1.0 / (float)*detA);
+			_A[i][j] = aux[i][j] * (1.0 / (float)*detA);
 		}
 	}
-	printf("\nDetA * Inversa A: \n");
-	MostrarMatriz(aux);
-	MultiplicarMatrizPorVetor(aux, b, X);
 }
 
 void IniciarValores(float A[Max][Max], float b[Max]){
@@ -113,31 +159,28 @@ void main(){
 		printf("====================================\n\n");
 		return;
 	}
-	//calculando determinante da matriz A.
-	CalcularDetA(A, &detA);
 	//verificando se o determinante é nulo.
-	if(detA == 0)
+	if(VerificarResultadoDeterminante(A, b) == 2)
 	{
-		printf("====================================\n");
-		printf("=        Determinante nulo         =\n");
-		printf("====================================\n\n");
-		return;
+		//calculando determinante da matriz A.
+		CalcularDeterminante(A, &detA);
+		
+		//mostrando dados
+		printf("\nMatriz A: \n");
+		MostrarMatriz(A);
+		printf("\nVetor b: \n");
+		MostrarVetor(b);
+		// mostrando o valor do determinante.
+		printf("\nDeterminante: %.4f\n", detA);
+		//Calculando inversa da matriz A e mostrando o seu valor.
+		CalcularInversaA(A, _A, &detA);
+		printf("\nMatriz inversa A: \n");
+		MostrarMatriz(_A);
+		//Calculando a soluçao do sistema linear e mostrando o seu valor.
+		printf("\nVetor X: \n");
+		MultiplicarMatrizPorVetor(A, b, X);
+		MostrarVetor(X);
 	}
-	//mostrando dados
-	printf("\nMatriz A: \n");
-	MostrarMatriz(A);
-	printf("\nVetor b: \n");
-	MostrarVetor(b);
-	// mostrando o valor do determinante.
-	printf("\nDeterminante: %.4f\n", detA);
-	//Calculando inversa da matriz A e mostrando o seu valor.
-	CalcularInversaA(A, _A);
-	printf("\nMatriz inversa A: \n");
-	MostrarMatriz(_A);
-	//Calculando a soluçao do sistema linear e mostrando o seu valor.
-	CalcularX(_A, b, X, &detA);
-	printf("\nVetor X: \n");
-	MostrarVetor(X);
 	
 	//================================================
 	printf("\n\n\n");
