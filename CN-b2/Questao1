@@ -39,6 +39,17 @@ double AplicarPrecisao(double num, int e)
     return floor(pow(10, e) * num) / pow(10, e);
 }
 
+unsigned short int VerificarMatrizNula(double A[Max][Max]){
+	int i, j;
+	for(i = 0; i < Max; i++){
+		for(j = 0; j < Max; j++){
+			if(A[i][j] != 0)
+				return 0;
+		}
+	}
+	return 1;
+}
+
 void CalcularDeterminante(double M[Max][Max], double *detM){
 	double aux[Max];
 	aux[0] = M[0][0] * M[1][1];
@@ -72,8 +83,17 @@ void CalcularDeterminante(double M[Max][Max], double *detM){
 	0 - (*)
 	1 - (**)
 	2 - (***)
+	-1 - Matriz nula
 */
 unsigned short int VerificarResultadoDeterminante(double M[Max][Max], double v[Max]){
+	if (VerificarMatrizNula(M) == 1){
+		
+		printf("====================================\n");
+		printf("=     Matriz informada eh nula     =\n");
+		printf("====================================\n\n");
+		return -1;
+	}
+	
 	double D1[Max][Max] = { { M[0][0], M[0][1] }, { M[1][0], M[1][1] } };
 	double D2[Max][Max] = { { M[0][0], v[0] }, { M[1][0], v[1] } };
 	double D3[Max][Max] = { { v[0], M[0][1] }, { v[1], M[1][1] } };
@@ -146,17 +166,6 @@ void IniciarValores(double A[Max][Max], double b[Max]){
 	system("cls");
 }
 
-unsigned short int VerificarMatrizNulo(double A[Max][Max]){
-	int i, j;
-	for(i = 0; i < Max; i++){
-		for(j = 0; j < Max; j++){
-			if(A[i][j] != 0)
-				return 0;
-		}
-	}
-	return 1;
-}
-
 void main(){
 	//matriz informada pelo usuario
 	double A[Max][Max];// = { { 1, 2 },  { 3, 4 } };
@@ -168,38 +177,40 @@ void main(){
 	double X[Max];
 	//determinante da matriz informada pelo usuario
 	double detA;
-	//iniciando os valores da matriz e vetor
-	IniciarValores(A, b);
-	//verificando se a matriz é nula.
-	if(VerificarMatrizNulo(A))
-	{
-		printf("====================================\n");
-		printf("=     Matriz informada eh nula     =\n");
-		printf("====================================\n\n");
-		return;
+	//variavel guarda a opçao escolhida pelo usuario para continuar ou nao a execuçao do programa.
+	char continuar = 's';
+	do{
+		system("cls");
+		//iniciando os valores da matriz e vetor
+		IniciarValores(A, b);
+		//verificando se o determinante é nulo.
+		if(VerificarResultadoDeterminante(A, b) == 2)
+		{
+			//calculando determinante da matriz A.
+			CalcularDeterminante(A, &detA);
+			
+			//mostrando dados informados pelo usuario.
+			printf("\nMatriz A: \n");
+			MostrarMatriz(A);
+			printf("\nVetor b: \n");
+			MostrarVetor(b);
+			// mostrando o valor do determinante.
+			printf("\nDeterminante de A: %.*f\n", e, detA);
+			//Calculando inversa da matriz A e mostrando o seu valor.
+			CalcularInversaA(A, _A, &detA);
+			printf("\nMatriz inversa A: \n");
+			MostrarMatriz(_A);
+			//Calculando a soluçao do sistema linear e mostrando o seu valor.
+			printf("\nVetor X: \n");
+			MultiplicarMatrizPorVetor(_A, b, X);
+			MostrarVetor(X);
+		}
+		printf("\n\nDeseja executar o programa novamente? (S/N): ");
+		fflush(stdin);
+		scanf("%c", &continuar);
 	}
-	//verificando se o determinante é nulo.
-	if(VerificarResultadoDeterminante(A, b) == 2)
-	{
-		//calculando determinante da matriz A.
-		CalcularDeterminante(A, &detA);
-		
-		//mostrando dados informados pelo usuario.
-		printf("\nMatriz A: \n");
-		MostrarMatriz(A);
-		printf("\nVetor b: \n");
-		MostrarVetor(b);
-		// mostrando o valor do determinante.
-		printf("\nDeterminante: %.*f\n", e, detA);
-		//Calculando inversa da matriz A e mostrando o seu valor.
-		CalcularInversaA(A, _A, &detA);
-		printf("\nMatriz inversa A: \n");
-		MostrarMatriz(_A);
-		//Calculando a soluçao do sistema linear e mostrando o seu valor.
-		printf("\nVetor X: \n");
-		MultiplicarMatrizPorVetor(_A, b, X);
-		MostrarVetor(X);
-	}
+	while(continuar == 's' || continuar == 'S');
+	
 	
 	//================================================
 	printf("\n\n\n");
