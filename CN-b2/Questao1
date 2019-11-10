@@ -34,8 +34,7 @@ void MultiplicarMatrizPorVetor(double A[Max][Max], double vetor[Max], double sai
 	}
 }
 
-double AplicarPrecisao(double num, int e) 
-{
+double AplicarPrecisao(double num, int e) {
     return floor(pow(10, e) * num) / pow(10, e);
 }
 
@@ -50,11 +49,8 @@ unsigned short int VerificarMatrizNula(double A[Max][Max]){
 	return 1;
 }
 
-void CalcularDeterminante(double M[Max][Max], double *detM){
-	double aux[Max];
-	aux[0] = M[0][0] * M[1][1];
-	aux[1] = M[0][1] * M[1][0];
-	*detM = aux[0] - aux[1];
+double CalcularDeterminante(double M[Max][Max]){
+	return M[0][0] * M[1][1] - M[0][1] * M[1][0];
 }
 /*
 	{ ax + by = b1
@@ -70,15 +66,15 @@ void CalcularDeterminante(double M[Max][Max], double *detM){
 	Di != 0
 	i = [ 1, 2, 3 ]
 		 
-	   |		 K ( numero qualquer != 0)
-	se |	Yi = __  	[ Infinitas soluçoes ]  (*)
-	   |		 0
+	   	     |		 K ( numero qualquer != 0)
+	      se |	Yi = __  	[ Infinitas soluçoes ]  (*)
+			 |		 0
 		 
-	   |		 0 
-	se |	Yi = __  	[ Impossivel de determinar ]  (**)
-	   |		 0
+	   		 |		 0 
+	senao se |	Yi = __  	[ Impossivel de determinar ]  (**)
+	   		 |		 0
 	   
-	senao [ Possivel de determinar ]  (***)
+	   senao 	[ Possivel de determinar ]  (***)
 	
 	0 - (*)
 	1 - (**)
@@ -98,10 +94,9 @@ unsigned short int VerificarResultadoDeterminante(double M[Max][Max], double v[M
 	double D2[Max][Max] = { { M[0][0], v[0] }, { M[1][0], v[1] } };
 	double D3[Max][Max] = { { v[0], M[0][1] }, { v[1], M[1][1] } };
 	
-	double det1, det2, det3;
-	CalcularDeterminante(D1, &det1);
-	CalcularDeterminante(D2, &det2);
-	CalcularDeterminante(D3, &det3);
+	double det1 = CalcularDeterminante(D1),
+	det2 = CalcularDeterminante(D2),
+	det3 = CalcularDeterminante(D3);
 	
 	if ((det2 != 0 || det3 != 0) && det1 == 0){
 		printf("====================================\n");
@@ -187,7 +182,7 @@ void main(){
 		if(VerificarResultadoDeterminante(A, b) == 2)
 		{
 			//calculando determinante da matriz A.
-			CalcularDeterminante(A, &detA);
+			detA = CalcularDeterminante(A);
 			
 			//mostrando dados informados pelo usuario.
 			printf("\nMatriz A: \n");
