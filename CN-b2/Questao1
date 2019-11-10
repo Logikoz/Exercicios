@@ -1,214 +1,255 @@
-#include <stdlib.h>
-#include <stdio.h>
 #include <math.h>
-//constante que define o tamanho da matriz/vetor
+#include <stdio.h>
+#include <stdlib.h>
+// constante que define o tamanho da matriz/vetor
 #define Max 2
-//Valor da precisao.
+// Valor da precisao.
 unsigned short int e = 0;
 
-void MostrarMatriz(double M[Max][Max]){
-	int i, j;
-	for(i = 0; i < Max; i++){
-		for(j = 0; j < Max; j++){
-			printf("%.*lf\t", e, M[i][j]);
-		}
-		printf("\n");
-	}
+void MostrarMatriz( double M[Max][Max] );
+void MostrarVetor( double V[], int size );
+void MultiplicarMatrizPorVetor( double A[Max][Max], double vetor[Max], double saida[Max] );
+double AplicarPrecisao( double num);
+unsigned short int VerificarMatrizNula( double A[Max][Max] );
+double CalcularDeterminante( double M[Max][Max] );
+unsigned short int VerificarResultadoDeterminante( double M[Max][Max], double v[Max] );
+void CalcularInversaA( double A[Max][Max], double _A[Max][Max], double detA );
+void IniciarValores( double A[Max][Max], double b[Max] );
+
+int main()
+{
+    // matriz informada pelo usuario
+    double A[Max][Max]; // = { { 1, 2 },  { 3, 4 } };
+    // matriz inversa da matriz informada pelo usuario
+    double _A[Max][Max];
+    // vetor informado pelo usuario.
+    double b[Max]; // = { 1, 2 };
+    // soluçao do sistema linear
+    double X[Max];
+
+    // variavel guarda a opçao escolhida pelo usuario para continuar ou nao a
+    // execuçao do programa.
+    char continuar = 's';
+    do
+    {
+        system( "cls" );
+        // iniciando os valores da matriz e vetor
+        IniciarValores( A, b );
+        // verificando se o determinante é nulo.
+        if( VerificarResultadoDeterminante( A, b ) == 2 )
+        {
+            // calculando determinante da matriz A.
+            double detA = CalcularDeterminante( A );
+
+            // mostrando dados informados pelo usuario.
+            printf( "\nMatriz A: \n" );
+            MostrarMatriz( A );
+            printf( "\nVetor b: \n" );
+            MostrarVetor( b, Max );
+            // mostrando o valor do determinante.
+            printf( "\nDeterminante de A: %.*f\n", e, detA );
+            // Calculando inversa da matriz A e mostrando o seu valor.
+            CalcularInversaA( A, _A, detA );
+            printf( "\nMatriz inversa A: \n" );
+            MostrarMatriz( _A );
+            // Calculando a soluçao do sistema linear e mostrando o seu valor.
+            printf( "\nVetor X: \n" );
+            MultiplicarMatrizPorVetor( _A, b, X );
+            MostrarVetor( X, Max );
+        }
+        printf( "\n\nDeseja executar o programa novamente? (S/N): " );
+        scanf( " %c", &continuar );
+    } while( continuar == 's' || continuar == 'S' );
+
+    //================================================
+    printf( "\n\n\n" );
+    system( "pause" );
+    system( "cls" );
+
+    return 0;
 }
 
-void MostrarVetor(double V[Max]){
-	int i;
-	for(i = 0; i < Max; i++){
-		printf("%.*lf\n", e, V[i]);
-	}
+void MostrarMatriz( double M[Max][Max] )
+{
+    for( int i = 0; i < Max; i++ )
+    {
+        MostrarVetor( M[i], Max );
+        puts( "\n" );
+    }
 }
 
-void MultiplicarMatrizPorVetor(double A[Max][Max], double vetor[Max], double saida[Max]) {
-	int i, j;
-	double aux[Max];
-	for(i = 0; i < Max; i++){
-		for(j = 0; j < Max; j++){
-			aux[j] = A[i][j] * vetor[j];
-		}
-		saida[i] = aux[0] + aux[1];
-	}
+void MostrarVetor( double V[], int size )
+{
+    for( int i = 0; i < size; i++ )
+    {
+        printf( "%.*lf\t", e, V[i] );
+    }
 }
 
-double AplicarPrecisao(double num, int e) {
-    return floor(pow(10, e) * num) / pow(10, e);
+void MultiplicarMatrizPorVetor( double A[Max][Max], double vetor[Max], double saida[Max] )
+{
+    double aux[Max];
+
+    for( int i = 0; i < Max; i++ )
+    {
+        for( int j = 0; j < Max; j++ )
+        {
+            aux[j] = A[i][j] * vetor[j];
+        }
+        saida[i] = aux[0] + aux[1];
+    }
 }
 
-unsigned short int VerificarMatrizNula(double A[Max][Max]){
-	int i, j;
-	for(i = 0; i < Max; i++){
-		for(j = 0; j < Max; j++){
-			if(A[i][j] != 0)
-				return 0;
-		}
-	}
-	return 1;
+double AplicarPrecisao( double num)
+{
+    return floor( pow( 10, e ) * num ) / pow( 10, e );
 }
 
-double CalcularDeterminante(double M[Max][Max]){
-	return M[0][0] * M[1][1] - M[0][1] * M[1][0];
+unsigned short int VerificarMatrizNula( double A[Max][Max] )
+{
+    for( int i = 0; i < Max; i++ )
+    {
+        for( int j = 0; j < Max; j++ )
+        {
+            if( A[i][j] != 0 )
+            {
+                return 0;
+            }
+        }
+    }
+
+    return 1;
 }
+
+double CalcularDeterminante( double M[Max][Max] )
+{
+    return M[0][0] * M[1][1] - M[0][1] * M[1][0];
+}
+
 /*
-	{ ax + by = b1
-	{ mx + ny = b2
-	
-	D1 = [ a  b ]  ;  D2 = [ a  b1 ]	;	D3 = [ b1 b ]
-		 [ m  n ]		   [ m  b2 ]			 [ b2 n ]
-	
-		 D2   			 D3
-	Y1 = __		;	Y2 = __
-		 D1				 D1
-	
-	Di != 0
-	i = [ 1, 2, 3 ]
-		 
-	   	     |		 K ( numero qualquer != 0)
-	      se |	Yi = __  	[ Infinitas soluçoes ]  (*)
-			 |		 0
-		 
-	   		 |		 0 
-	senao se |	Yi = __  	[ Impossivel de determinar ]  (**)
-	   		 |		 0
-	   
-	   senao 	[ Possivel de determinar ]  (***)
-	
-	0 - (*)
-	1 - (**)
-	2 - (***)
-	-1 - Matriz nula
+    { ax + by = b1
+    { mx + ny = b2
+
+    D1 = [ a  b ]  ;  D2 = [ a  b1 ]    ;    D3 = [ b1 b ]
+         [ m  n ]          [ m  b2 ]              [ b2 n ]
+
+         D2                  D3
+    Y1 = __        ;    Y2 = __
+         D1                  D1
+
+    Di != 0
+    i = [ 1, 2, 3 ]
+
+             |         K ( numero qualquer != 0)
+          se |    Yi = __      [ Infinitas soluçoes ]  (*)
+             |         0
+
+             |         0
+    senao se |    Yi = __      [ Impossivel de determinar ]  (**)
+             |         0
+
+       senao     [ Possivel de determinar ]  (***)
+
+    0 - (*)
+    1 - (**)
+    2 - (***)
+    -1 - Matriz nula
 */
-unsigned short int VerificarResultadoDeterminante(double M[Max][Max], double v[Max]){
-	if (VerificarMatrizNula(M) == 1){
-		
-		printf("====================================\n");
-		printf("=     Matriz informada eh nula     =\n");
-		printf("====================================\n\n");
-		return -1;
-	}
-	
-	double D1[Max][Max] = { { M[0][0], M[0][1] }, { M[1][0], M[1][1] } };
-	double D2[Max][Max] = { { M[0][0], v[0] }, { M[1][0], v[1] } };
-	double D3[Max][Max] = { { v[0], M[0][1] }, { v[1], M[1][1] } };
-	
-	double det1 = CalcularDeterminante(D1),
-	det2 = CalcularDeterminante(D2),
-	det3 = CalcularDeterminante(D3);
-	
-	if ((det2 != 0 || det3 != 0) && det1 == 0){
-		printf("====================================\n");
-		printf("=        Infinitas Solucoes        =\n");
-		printf("====================================\n\n");
-		return 0;
-	}
-	else if ((det2 == 0 || det3 == 0) && det1 == 0){
-		printf("====================================\n");
-		printf("=     Impossivel de Determinar     =\n");
-		printf("====================================\n\n");
-		return 1;
-	}
-	else
-		return 2;
+unsigned short int VerificarResultadoDeterminante( double M[Max][Max], double v[Max] )
+{
+    if( VerificarMatrizNula( M ) == 1 )
+    {
+        printf( "====================================\n" );
+        printf( "=     Matriz informada eh nula     =\n" );
+        printf( "====================================\n\n" );
+
+        return -1;
+    }
+
+    double D1[Max][Max] = {{M[0][0], M[0][1]}, {M[1][0], M[1][1]}};
+    double D2[Max][Max] = {{M[0][0], v[0]}, {M[1][0], v[1]}};
+    double D3[Max][Max] = {{v[0], M[0][1]}, {v[1], M[1][1]}};
+
+    double det1 = CalcularDeterminante( D1 );
+    double det2 = CalcularDeterminante( D2 );
+    double det3 = CalcularDeterminante( D3 );
+
+    if( ( det2 != 0 || det3 != 0 ) && det1 == 0 )
+    {
+        printf( "====================================\n" );
+        printf( "=        Infinitas Solucoes        =\n" );
+        printf( "====================================\n\n" );
+
+        return 0;
+    }
+    else if( ( det2 == 0 || det3 == 0 ) && det1 == 0 )
+    {
+        printf( "====================================\n" );
+        printf( "=     Impossivel de Determinar     =\n" );
+        printf( "====================================\n\n" );
+
+        return 1;
+    }
+    else
+    {
+        return 2;
+    }
 }
 
-void CalcularInversaA(double A[Max][Max], double _A[Max][Max], double *detA){
-	int i, j;
-	double aux[Max][Max];
-	for(i = 0; i < Max; i++){
-		for(j = 0; j < Max; j++){			
-			if(i == j)
-				aux[i][j] = (i == 0) ? A[i+1][j+1] : A[i-1][j-1];
-			else
-				aux[i][j] = A[i][j] * -1;
-		}
-	}
-	//fazendo a multiplicaçao do determinante pela matriz inversa.
-	for(i = 0; i < Max; i++){
-		for(j = 0; j < Max; j++){
-			_A[i][j] = aux[i][j] * (1.0 / (double)*detA);
-		}
-	}
+void CalcularInversaA( double A[Max][Max], double _A[Max][Max], double detA )
+{
+    double aux[Max][Max];
+
+    for( int i = 0; i < Max; i++ )
+    {
+        for( int j = 0; j < Max; j++ )
+        {
+            if( i == j )
+                aux[i][j] = ( i == 0 ) ? A[i + 1][j + 1] : A[i - 1][j - 1];
+            else
+                aux[i][j] = A[i][j] * -1;
+        }
+    }
+    // fazendo a multiplicaçao do determinante pela matriz inversa.
+    for( int i = 0; i < Max; i++ )
+    {
+        for( int j = 0; j < Max; j++ )
+        {
+            _A[i][j] = aux[i][j] * ( 1.0 / detA );
+        }
+    }
 }
 
-void IniciarValores(double A[Max][Max], double b[Max]){
-	int i, j;
-	double aux;
-	
-	printf("\nInforme um numero inteiro e positivo para a precisao (E)\n");
-	printf("Note que o numero eh referente a quantidade de casas decimais\n");
-	printf("Ex: 4 -> 3.1415, 1 -> 3.1, 0 -> 3\n");
-	printf("Valor: ");
-	scanf("%u", &e);
-	
-	printf("\n=-=-=-=-=-= Valores da matriz =-=-=-=-=-=\n");
-	for(i = 0; i < Max; i++){
-		for(j = 0; j < Max; j++){
-			printf("Informe o elemento (%i,%i): ", i, j);
-			scanf("%lf", &aux);
-			A[i][j] = AplicarPrecisao(aux, e);
-		}
-	}
-	
-	printf("\n\n=-=-=-=-=-= Valores do vetor =-=-=-=-=-=\n");
-	for(i = 0; i < Max; i++){
-		printf("Informe o elemento (%i): ", i);
-		scanf("%lf", &aux);
-		b[i] = AplicarPrecisao(aux, e);
-	}
-	system("cls");
-}
+void IniciarValores( double A[Max][Max], double b[Max] )
+{
+    double aux;
 
-void main(){
-	//matriz informada pelo usuario
-	double A[Max][Max];// = { { 1, 2 },  { 3, 4 } };
-	//matriz inversa da matriz informada pelo usuario
-	double _A[Max][Max];
-	//vetor informado pelo usuario.
-	double b[Max];// = { 1, 2 };
-	//soluçao do sistema linear
-	double X[Max];
-	//determinante da matriz informada pelo usuario
-	double detA;
-	//variavel guarda a opçao escolhida pelo usuario para continuar ou nao a execuçao do programa.
-	char continuar = 's';
-	do{
-		system("cls");
-		//iniciando os valores da matriz e vetor
-		IniciarValores(A, b);
-		//verificando se o determinante é nulo.
-		if(VerificarResultadoDeterminante(A, b) == 2)
-		{
-			//calculando determinante da matriz A.
-			detA = CalcularDeterminante(A);
-			
-			//mostrando dados informados pelo usuario.
-			printf("\nMatriz A: \n");
-			MostrarMatriz(A);
-			printf("\nVetor b: \n");
-			MostrarVetor(b);
-			// mostrando o valor do determinante.
-			printf("\nDeterminante de A: %.*f\n", e, detA);
-			//Calculando inversa da matriz A e mostrando o seu valor.
-			CalcularInversaA(A, _A, &detA);
-			printf("\nMatriz inversa A: \n");
-			MostrarMatriz(_A);
-			//Calculando a soluçao do sistema linear e mostrando o seu valor.
-			printf("\nVetor X: \n");
-			MultiplicarMatrizPorVetor(_A, b, X);
-			MostrarVetor(X);
-		}
-		printf("\n\nDeseja executar o programa novamente? (S/N): ");
-		fflush(stdin);
-		scanf("%c", &continuar);
-	}
-	while(continuar == 's' || continuar == 'S');
-	
-	
-	//================================================
-	printf("\n\n\n");
-	system("pause");
-	system("cls");
+    puts( "\n"
+          "Informe um numero inteiro e positivo para a precisao (E)\n"
+          "Note que o numero eh referente a quantidade de casas decimais\n"
+          "Ex: 4 -> 3.1415, 1 -> 3.1, 0 -> 3\n"
+          "Valor: " );
+    scanf( "%hu", &e );
+
+    printf( "\n=-=-=-=-=-= Valores da matriz =-=-=-=-=-=\n" );
+    for( int i = 0; i < Max; i++ )
+    {
+        for( int j = 0; j < Max; j++ )
+        {
+            printf( "Informe o elemento (%i,%i): ", i, j );
+            scanf( "%lf", &aux );
+
+            A[i][j] = AplicarPrecisao( aux );
+        }
+    }
+
+    printf( "\n\n=-=-=-=-=-= Valores do vetor =-=-=-=-=-=\n" );
+    for( int i = 0; i < Max; i++ )
+    {
+        printf( "Informe o elemento (%i): ", i );
+        scanf( "%lf", &aux );
+
+        b[i] = AplicarPrecisao( aux );
+    }
+    system( "cls" );
 }
