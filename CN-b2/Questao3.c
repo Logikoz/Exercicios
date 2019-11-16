@@ -32,9 +32,9 @@ void main()
 		printf("\nPrecisao (E) informada pelo usuario: %hu\n\n", e);
 		MostrarVetor(V, "Vetor V (Informado pelo usuario):");
 		MostrarVetor(E, "\nVetor E (Informado pelo usuario):");
-		MostrarVetor(aV, "\nVetor aV (Produto vetorial de V e E):");
+		MostrarVetor(aV, "\nVxE (Produto vetorial):");
 		//Calculando a area do vetor
-		printf("\n\nCalculo da area: %lf (m)\n", AreaVetor(aV));
+		printf("\n\nCalculo da area |VxE|: %.*lf (m)\n", e, AreaVetor(aV));
 
 		printf("\n\nDeseja executar o programa novamente? (S/N): ");
 		scanf(" %c", &continuar);
