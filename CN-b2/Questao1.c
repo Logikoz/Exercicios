@@ -319,9 +319,7 @@ unsigned short int VerificarResultadoDeterminante(double M[Max][Max], double v[M
         return 1;
     }
     else
-    {
         return 2;
-    }
 }
 
 void CalcularInversaA(double A[Max][Max], double _A[Max][Max], double detA)
