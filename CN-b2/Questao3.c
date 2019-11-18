@@ -3,9 +3,9 @@
 #include <math.h>
 #include <stdbool.h>
 #include <ctype.h>
-
+// constante que define o tamanho do vetor
 #define Max 3
-
+// Valor da precisao.
 unsigned short int e = 0;
 
 void ProdutoVetorial(double v[Max], double e[Max], double aV[Max]);
@@ -35,7 +35,7 @@ void main()
 		MostrarVetor(aV, "\nVxE (Produto vetorial):");
 		//Calculando a area do vetor
 		printf("\n\nCalculo da area |VxE|: %.*lf (m)\n", e, AreaVetor(aV));
-
+		//mostra mensagem para o usuario inforamr se quer rodar o programa outra vez.
 		printf("\n\nDeseja executar o programa novamente? (S/N): ");
 		scanf(" %c", &continuar);
 	} while (continuar == 's' || continuar == 'S');
@@ -106,6 +106,8 @@ void IniciarValores(double A[Max], double E[Max])
 		scanf("%s", entrada);
 		if (ValidarNumero(entrada, sizeof(entrada) / sizeof(char) - 1))
 		{
+			if(atoi(entrada) < 0)
+				continue;
 			e = atoi(entrada);
 			break;
 		}
