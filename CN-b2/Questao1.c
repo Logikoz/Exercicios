@@ -68,6 +68,7 @@ int main()
             else
                 puts("\n\nLogo, X nao eh a solucao do sistema linear.");
         }
+		//mostra mensagem para o usuario inforamr se quer rodar o programa outra vez.
         printf("\n\nDeseja executar o programa novamente? (S/N): ");
         scanf(" %c", &continuar);
     } while (continuar == 's' || continuar == 'S');
@@ -141,6 +142,8 @@ void IniciarValores(double A[Max][Max], double b[Max])
         scanf("%s", entrada);
         if (ValidarNumero(entrada, sizeof(entrada) / sizeof(char) - 1))
         {
+			if(atoi(entrada) < 0)
+				continue;
             e = atoi(entrada);
             break;
         }
