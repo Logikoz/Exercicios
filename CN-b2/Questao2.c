@@ -9,23 +9,25 @@
 unsigned short int e = 0;
 
 unsigned short int ValidarNumero(char arr[], int tam);
-void IniciarValores(double A[Max], double E[Max]);
-void IniciarVetores(double V[]);
-void MostrarVetor(double V[], char msg[]);
+void IniciarValores();
 double AplicarPrecisao(double num);
+void IniciarValoresIndices(double *i, char msg[100]);
 
 void main()
 {
-	char entrada[] = "x²-5x+6";
+	double a, b, c;
 	
 	char continuar = 's';
+	
 	do
 	{
-		char a[] = "x-1";
-		char b[] = "x-3";
+		IniciarValores();
+		IniciarValoresIndices(&a, "Informe o valor de \'a\': ");
+		IniciarValoresIndices(&b, "Informe o valor de \'b\': ");
+		IniciarValoresIndices(&c, "Informe o valor de \'c\': ");
 		
-		char teste[20];
-		
+		printf("\n\nDeseja executar o programa novamente? (S/N): ");
+		scanf(" %c", &continuar);
 	} while (continuar == 's' || continuar == 'S');
 
 	//================================================
@@ -67,7 +69,7 @@ unsigned short int ValidarNumero(char arr[], int tam)
 	return 1;
 }
 
-void IniciarValores(double A[Max], double E[Max])
+void IniciarValores()
 {
 	double aux;
 	char entrada[100];
@@ -88,50 +90,30 @@ void IniciarValores(double A[Max], double E[Max])
 		}
 	}
 
-	printf("\n\n=-=-=-=-=-= Valores do vetor =-=-=-=-=-=\n");
-	printf("-------------- Vetor V --------------\n");
-	IniciarVetores(A);
-	printf("-------------- Vetor E --------------\n");
-	IniciarVetores(E);
-
 	system("cls");
 }
 
-void IniciarVetores(double V[])
+void IniciarValoresIndices(double *i, char msg[100])
 {
+	printf("%s", msg);
 	char entrada[100];
-	double aux;
-	for (int i = 0; i < Max; i++)
+	
+	while (true)
 	{
-		printf("Informe o elemento (%c): ", 105 + i);
-		while (true)
+		scanf("%s", entrada);
+		if (ValidarNumero(entrada, sizeof(entrada) / sizeof(char) - 1))
 		{
-			scanf("%s", entrada);
-			if (ValidarNumero(entrada, sizeof(entrada) / sizeof(char) - 1))
-			{
-				aux = atof(entrada);
-				V[i] = AplicarPrecisao(aux);
-				break;
-			}
-			else
-			{
-				puts("Por favor informe um numero valido.\n"
-					 "Caracteres especiais e expressoes nao sao permitidas.\n"
-					 "Ex: 4, -3.55654, 0.\n"
-					 "valor: ");
-			}
+			*i = AplicarPrecisao(atoi(entrada));
+			break;
+		}
+		else
+		{
+			puts("Por favor informe um numero valido.\n"
+			 "Caracteres especiais e expressoes nao sao permitidas.\n"
+			 "Ex: 4, -3.55654, 0\n"
+			 "valor: ");
 		}
 	}
-}
-
-void MostrarVetor(double V[], char msg[])
-{
-	printf("%s\n", msg);
-	for (int i = 0; i < Max; i++)
-	{
-		printf("%.*lf%c\t", e, V[i], 105 + i);
-	}
-	printf("\n");
 }
 
 double AplicarPrecisao(double num)
