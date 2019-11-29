@@ -56,11 +56,17 @@ void main()
 			delta = CalcularDelta(a, b, c);
 			ProcurarRaizes(a, b, delta, S);
 			//printf("%lf\n", delta);
-			printf("%lf|%lf", S[0], S[1]);
+			//printf("%lf|%lf\n", S[0], S[1]);
+			//printf("%lf %lf\n", a*(S[1]+S[0]), a*(S[1]*S[0]));
 			
-			if(a*(S[1]+S[0]) == b && a*(S[1]*S[0]) == c)
+			system("cls");
+			if(a*(-S[1]-S[0]) == b && a*(-S[1]*-S[0]) == c)
 			{
-				printf("Logo, S¹ (%.*lf) e S² (%.*lf) sao as raizes do Polinomio.", e, S[0], S[1]);
+				printf("Portanto, S1 (%.*lf) e S1 (%.*lf) sao as raizes do Polinomio.", e, S[0], e, S[1]);
+			}
+			else
+			{
+				printf("Como [(X-S1)(X-S2)] nao geram o polinomio de 2 grau, nao sao raizes do polinomio.")
 			}
 		}
 		else
