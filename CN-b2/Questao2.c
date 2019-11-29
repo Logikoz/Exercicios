@@ -18,10 +18,10 @@ double CalcularDelta(double a, double b, double c)
 	return ((b*b) - (4*a*c));
 }
 
-void ProcurarRaizes(double a, double b, double c, double delta, double S[2])
+void ProcurarRaizes(double a, double b, double delta, double S[2])
 {
-	S[0] = (-b + sqrt(delta))/2*a;
-	S[1] = (-b - sqrt(delta))/2*a;
+	S[0] = (-b + sqrt(delta))/(2.0*a);
+	S[1] = (-b - sqrt(delta))/(2.0*a);
 }
 
 void main()
@@ -51,14 +51,21 @@ void main()
 			continue;
 		}
 		
-		delta = CalcularDelta(a, b, c);
-		ProcurarRaizes(a, b, c, delta, S);
-		//printf("%lf\n", delta);
-		//printf("%lf|%lf", S[0], S[1]);
-		
 		if((int)b % (int)a== 0 && (int)c % (int)a == 0)
 		{
+			delta = CalcularDelta(a, b, c);
+			ProcurarRaizes(a, b, delta, S);
+			//printf("%lf\n", delta);
+			printf("%lf|%lf", S[0], S[1]);
 			
+			if(a*(S[1]+S[0]) == b && a*(S[1]*S[0]) == c)
+			{
+				printf("Logo, S¹ (%.*lf) e S² (%.*lf) sao as raizes do Polinomio.", e, S[0], S[1]);
+			}
+		}
+		else
+		{
+			printf("Nao eh possivel fazer a simplificacao por %.*lf.\n", e, a);
 		}
 		
 		printf("\n\nDeseja executar o programa novamente? (S/N): ");
