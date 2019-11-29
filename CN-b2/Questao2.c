@@ -16,6 +16,7 @@ void IniciarValoresIndices(double *i, char msg[100]);
 void main()
 {
 	double a, b, c;
+	double S[2]; //Chi
 	
 	char continuar = 's';
 	
@@ -26,8 +27,22 @@ void main()
 		IniciarValoresIndices(&b, "Informe o valor de \'b\': ");
 		IniciarValoresIndices(&c, "Informe o valor de \'c\': ");
 		
+		if(a == 0)
+		{
+			puts("\n============================================\n"
+				 "=     O valor de \'a\' nao pode ser nulo.    =\n"
+				 "= Por favor, informe os valores novamente. =\n"
+				 "============================================");
+			fflush(stdin);
+			scanf("%lf", &c);
+			system("cls");
+			continue;
+		}
+		
 		printf("\n\nDeseja executar o programa novamente? (S/N): ");
-		scanf(" %c", &continuar);
+		fflush(stdin);
+		scanf("%c", &continuar);
+		
 	} while (continuar == 's' || continuar == 'S');
 
 	//================================================
