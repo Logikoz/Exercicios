@@ -13,10 +13,22 @@ void IniciarValores();
 double AplicarPrecisao(double num);
 void IniciarValoresIndices(double *i, char msg[100]);
 
+double CalcularDelta(double a, double b, double c)
+{
+	return ((b*b) - (4*a*c));
+}
+
+void ProcurarRaizes(double a, double b, double c, double delta, double S[2])
+{
+	S[0] = (-b + sqrt(delta))/2*a;
+	S[1] = (-b - sqrt(delta))/2*a;
+}
+
 void main()
 {
 	double a, b, c;
 	double S[2]; //Chi
+	double delta;
 	
 	char continuar = 's';
 	
@@ -39,13 +51,23 @@ void main()
 			continue;
 		}
 		
+		delta = CalcularDelta(a, b, c);
+		ProcurarRaizes(a, b, c, delta, S);
+		//printf("%lf\n", delta);
+		//printf("%lf|%lf", S[0], S[1]);
+		
+		if((int)b % (int)a== 0 && (int)c % (int)a == 0)
+		{
+			
+		}
+		
 		printf("\n\nDeseja executar o programa novamente? (S/N): ");
 		fflush(stdin);
 		scanf("%c", &continuar);
 		
 	} while (continuar == 's' || continuar == 'S');
 
-	//================================================
+	//=============================================
 	printf("\n\n\n");
 	system("pause");
 	system("cls");
