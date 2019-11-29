@@ -60,13 +60,18 @@ void main()
 			//printf("%lf %lf\n", a*(S[1]+S[0]), a*(S[1]*S[0]));
 			
 			system("cls");
+			printf("=================== Resultado ===================\n\n");
+			printf("a: %.*lf\tb: %.*lf\tc: %.*lf\n\n", e, a, e, b, e, c);
+			printf("Delta: %.*lf\n\n", e, delta);
+			printf("S1: %.*lf\tS2: %.*lf\n\n", e, S[1], e, S[0]);
+			
 			if(a*(-S[1]-S[0]) == b && a*(-S[1]*-S[0]) == c)
 			{
-				printf("Portanto, S1 (%.*lf) e S1 (%.*lf) sao as raizes do Polinomio.", e, S[0], e, S[1]);
+				printf("Portanto, S1 e S1 sao as raizes do Polinomio.");
 			}
 			else
 			{
-				printf("Como [(X-S1)(X-S2)] nao geram o polinomio de 2 grau, nao sao raizes do polinomio.")
+				printf("Como [(X-S1)(X-S2)] nao gera o polinomio de 2 grau dado, nao sao raizes do mesmo.");
 			}
 		}
 		else
@@ -74,7 +79,7 @@ void main()
 			printf("Nao eh possivel fazer a simplificacao por %.*lf.\n", e, a);
 		}
 		
-		printf("\n\nDeseja executar o programa novamente? (S/N): ");
+		printf("\n\n\nDeseja executar o programa novamente? (S/N): ");
 		fflush(stdin);
 		scanf("%c", &continuar);
 		
